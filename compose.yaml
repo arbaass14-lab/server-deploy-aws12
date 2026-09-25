@@ -1,0 +1,20 @@
+# Local development database only. Use managed PostgreSQL or secure credentials
+# and backups for production. The port is bound to this computer's loopback.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: wattwise
+      POSTGRES_PASSWORD: wattwise_local
+      POSTGRES_DB: wattwise
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - wattwise_database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wattwise -d wattwise"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+volumes:
+  wattwise_database:
